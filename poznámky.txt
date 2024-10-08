@@ -1,0 +1,57 @@
+Barva v pixelu je v rastrové grafice uložena pomocí barevného modelu, nejčastěji RGB (červená, zelená, modrá). Každý pixel obsahuje tři hodnoty:
+
+R (Red): intenzita červené složky,
+G (Green): intenzita zelené složky,
+B (Blue): intenzita modré složky.
+Každá složka nabývá hodnot od 0 do 255, což odpovídá 8 bitům na složku. Celkově tedy jeden pixel zabírá 24 bitů (3 bajty).
+
+Příklad barev:
+Bílá: (255, 255, 255)
+Černá: (0, 0, 0)
+Červená: (255, 0, 0)
+Kromě RGB existuje i model RGBA, kde čtvrtá složka A (Alpha) určuje průhlednost.
+
+Raster je mřížka pixelů, kde každý pixel nese informaci o barvě. Pixely jsou organizovány do dvourozměrné matice, což umožňuje vytvářet digitální obrázky na monitorech a dalších zařízeních.
+
+
+
+
+Třídy: Základní stavební blok OOP. Třída definuje vlastnosti (atributy) a chování (metody) objektů.
+
+Objekty: Instance tříd, které mají konkrétní hodnoty a stavy. Objekty se vytvářejí na základě tříd.
+
+Rozhraní (Interfaces): Určují, jaké metody musí třída implementovat, ale neobsahují jejich definici. Umožňují různým třídám mít stejnou sadu metod, čímž podporují polymorfismus.
+
+Abstraktní třídy: Třídy, které nemohou být instancovány, ale mohou obsahovat některé implementované metody. Slouží jako základ pro odvozené třídy a umožňují sdílení kódu.
+
+Dědičnost: Mechanismus, který umožňuje jedné třídě (podtřídě) zdědit vlastnosti a metody jiné třídy (nadtřídy). To podporuje opětovné použití kódu a usnadňuje jeho správu.
+
+Polymorfismus: Schopnost různých tříd používat stejnou metodu, která se chová odlišně v závislosti na typu objektu.
+
+
+
+
+public class TrivialLine {
+    public static void drawLine(int x1, int y1, int x2, int y2, int[][] raster) {
+        float k = (float)(y2 - y1) / (x2 - x1);  // Výpočet směrnice
+        float q = y1 - k * x1;                    // Výpočet průsečíku
+
+        for (int x = x1; x <= x2; x++) {          // Iterace přes hodnoty x
+            int y = Math.round(k * x + q);        // Výpočet hodnoty y
+            raster[x][y] = 1;                      // Vykreslení pixelu
+        }
+    }
+}
+}
+
+
+Popis algoritmu:
+
+1) Určíme dva body (x1,y1) a (x2,y2), který definujou usecku
+2) Určíme směrnici -> k, tento výpočet určuje, jak strmá je úsečka
+3) Výpočet průsečíku s osou y -> q, tento výpočet určuje, kde úsečka prochází osou y
+4) Pro každou hodnotu x vypočítáme odpovídající hodnotu y pomocí rovnice: y = k*x+q
+5) Vykreslení pixelu
+
+
+

@@ -1,22 +1,22 @@
 package rasterize;
 
 import model.Line;
-import view.Panel;  // Nezapomeň na import třídy Panel
+import view.Panel;
 
 import java.awt.image.BufferedImage;
 
 public class ThicknessLineRasterizer extends LineRasterizer {
-    private final int thickness = 8; // Výchozí tloušťka čáry
-    private final Panel panel; // Přidáme proměnnou pro Panel
+    private final int thickness = 8;
+    private final Panel panel;
 
     public ThicknessLineRasterizer(BufferedImage raster, Panel panel) {
         super(raster);
-        this.panel = panel; // Uložení instance Panel
+        this.panel = panel;
     }
 
     public ThicknessLineRasterizer(BufferedImage raster, int color, Panel panel) {
         super(raster, color);
-        this.panel = panel; // Uložení instance Panel
+        this.panel = panel;
     }
 
     @Override
@@ -26,12 +26,13 @@ public class ThicknessLineRasterizer extends LineRasterizer {
         int x2 = line.getX2();
         int y2 = line.getY2();
 
-        float k = (x1 == x2) ? 0 : (y2 - y1) / (float) (x2 - x1); // Výpočet směrnice k
+        // Výpočet směrnice k
+        float k = (x1 == x2) ? 0 : (y2 - y1) / (float) (x2 - x1);
         float q = y1 - k * x1;
 
         // Řídící osa je x
         if (Math.abs(k) <= 1) {
-            if (x1 > x2) {  // Ošetření pro čáry zleva doprava
+            if (x1 > x2) {
                 int tempX = x1;
                 int tempY = y1;
                 x1 = x2;
@@ -46,7 +47,7 @@ public class ThicknessLineRasterizer extends LineRasterizer {
         }
         // Řídící osa je y
         else {
-            if (y1 > y2) {  // Ošetření pro čáry shora dolů
+            if (y1 > y2) {
                 int tempX = x1;
                 int tempY = y1;
                 x1 = x2;
@@ -61,14 +62,14 @@ public class ThicknessLineRasterizer extends LineRasterizer {
         }
     }
 
-    // Vykreslí tlustý bod (čtvercová oblast kolem daného bodu)
+    // Vykreslí tlustý bod
     private void drawThickPoint(int x, int y, int thickness) {
         int halfThickness = thickness / 2;
         for (int dx = -halfThickness; dx <= halfThickness; dx++) {
             for (int dy = -halfThickness; dy <= halfThickness; dy++) {
                 int drawX = x + dx;
                 int drawY = y + dy;
-                // Použijeme metodu inWindow z instance panelu
+                // pokud je v panelu tak vykreslíme
                 if (panel.inWindow(drawX, drawY)) {
                     raster.setRGB(drawX, drawY, color);
                 }
