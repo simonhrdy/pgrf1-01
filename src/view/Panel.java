@@ -29,11 +29,11 @@ public class Panel extends JPanel {
     public void clear() {
         Graphics g = raster.getGraphics();
         g.setColor(new Color(0x2f2f2f));
-        g.clearRect(0, 0, raster.getWidth() - 1, raster.getHeight() - 1);
+        g.clearRect(0, 0, raster.getWidth(), raster.getHeight());
     }
 
 
     public boolean inWindow(int x, int y) {
-        return x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+        return (x < getWidth() && x > 0) && (y < getHeight() && y > 0);
     }
 }

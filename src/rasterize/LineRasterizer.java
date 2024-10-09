@@ -19,7 +19,7 @@ public abstract class LineRasterizer {
         this.color = color;
     }
 
-    public void drawLine(Line line) {
+    public void drawLine(Line line, boolean isShift) {
 
     }
 }
