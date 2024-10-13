@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 public class Polygon {
-    private ArrayList<Point> points;
+    private final ArrayList<Point> points;
 
     public Polygon() {
         this.points = new ArrayList<>();
@@ -30,6 +30,17 @@ public class Polygon {
     }
 
     public void clearList() {
-        this.points.clear();
+        if(getSize() > 0) {
+            this.points.clear();
+        }
+    }
+
+    public void setPoint(int index, Point point)
+    {
+        try {
+            this.points.set(index, point);
+        } catch (IndexOutOfBoundsException ex) {
+            this.addPoint(point);
+        }
     }
 }

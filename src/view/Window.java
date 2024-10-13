@@ -11,6 +11,7 @@ public class Window extends JFrame {
        setTitle("PGRF1 2024/25");
        setVisible(true);
        setResizable(false);
+       setLocationRelativeTo(null);
 
 
        panel = new Panel(width, height);

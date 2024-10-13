@@ -1,53 +1,24 @@
 package rasterize;
 
 import model.Line;
-import view.Panel;
-
-import java.awt.image.BufferedImage;
+import raster.Raster;
 
 public class FilledLineRasterizer extends LineRasterizer {
-    private final Panel panel;
 
-    public FilledLineRasterizer(BufferedImage raster, Panel panel) {
+    public FilledLineRasterizer(Raster raster) {
         super(raster);
-        this.panel = panel;
     }
 
-    public FilledLineRasterizer(BufferedImage raster, int color, Panel panel) {
+    public FilledLineRasterizer(Raster raster, int color) {
         super(raster, color);
-        this.panel = panel;
     }
 
     @Override
-    public void drawLine(Line line, boolean isShift) {
+    public void drawLine(Line line) {
         int x1 = line.getX1();
         int y1 = line.getY1();
         int x2 = line.getX2();
         int y2 = line.getY2();
-
-        if (isShift) {
-            // Výpočet rozdílů mezi souřadnicemi
-            float dx = Math.abs(x2 - x1);
-            float dy = Math.abs(y2 - y1);
-            float threshold = 30; // Nastavíme práh pro rozhodování
-
-            // Pokud je rozdíl v y menší než práh, úsečka je horizontální
-            if (dy < threshold) {
-                y2 = y1;
-            }
-            // Pokud je rozdíl v x menší než práh, úsečka je vertikální
-            else if (dx < threshold) {
-                x2 = x1;
-            }
-            // Pokud je rozdíl v obou osách větší, úsečka bude diagonální (45°)
-            else {
-                if (dx > dy) {
-                    y2 = y1 + (int) Math.signum(y2 - y1) * (int) dx;
-                } else {
-                    x2 = x1 + (int) Math.signum(x2 - x1) * (int) dy;
-                }
-            }
-        }
 
         // Pokud je x1 větší než x2, prohodíme body úsečky (abychom vždy kreslili zleva doprava)
         if (x1 > x2) {
@@ -66,8 +37,8 @@ public class FilledLineRasterizer extends LineRasterizer {
         // Vertikální úsečka
         if (x1 == x2) {
             for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                if (panel.inWindow(x1, y)) {
-                    raster.setRGB(x1, y, color);
+                if (raster.inRange(x1, y)) {
+                    raster.setPixel(x1, y, color);
                 }
             }
         }
@@ -75,8 +46,8 @@ public class FilledLineRasterizer extends LineRasterizer {
         else if (Math.abs(k) <= 1) {
             for (int x = x1; x <= x2; x++) {
                 float y = k * x + q;
-                if (panel.inWindow(x, Math.round(y))) {
-                    raster.setRGB(x, Math.round(y), color);
+                if (raster.inRange(x, Math.round(y))) {
+                    raster.setPixel(x, Math.round(y), color);
                 }
             }
         }
@@ -93,8 +64,8 @@ public class FilledLineRasterizer extends LineRasterizer {
 
             for (int y = y1; y <= y2; y++) {
                 float x = (y - q) / k;
-                if (panel.inWindow(Math.round(x), y)) {
-                    raster.setRGB(Math.round(x), y, color);
+                if (raster.inRange(Math.round(x), y)) {
+                    raster.setPixel(Math.round(x), y, color);
                 }
             }
         }

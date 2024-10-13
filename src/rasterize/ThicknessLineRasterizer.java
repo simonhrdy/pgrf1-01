@@ -1,55 +1,30 @@
 package rasterize;
 
 import model.Line;
-import view.Panel;
-
-import java.awt.image.BufferedImage;
+import raster.Raster;
 
 public class ThicknessLineRasterizer extends LineRasterizer {
     private final int thickness = 8;
-    private final Panel panel;
 
-    public ThicknessLineRasterizer(BufferedImage raster, Panel panel) {
+    public ThicknessLineRasterizer(Raster raster) {
         super(raster);
-        this.panel = panel;
     }
 
-    public ThicknessLineRasterizer(BufferedImage raster, int color, Panel panel) {
+    public ThicknessLineRasterizer(Raster raster, int color) {
         super(raster, color);
-        this.panel = panel;
     }
 
     @Override
-    public void drawLine(Line line, boolean isShift) {
+    public void drawLine(Line line) {
         int x1 = line.getX1();
         int y1 = line.getY1();
         int x2 = line.getX2();
         int y2 = line.getY2();
 
-        // Pokud je stisknutý Shift, upravíme souřadnice
-        if (isShift) {
-            float dx = Math.abs(x2 - x1);
-            float dy = Math.abs(y2 - y1);
-            float threshold = 30;
-
-            if (dy < threshold) {
-                y2 = y1;  // Horizontální čára
-            } else if (dx < threshold) {
-                x2 = x1;  // Vertikální čára
-            } else {
-                // Úhlopříčná čára
-                if (dx > dy) {
-                    y2 = y1 + (int) Math.signum(y2 - y1) * (int) dx;
-                } else {
-                    x2 = x1 + (int) Math.signum(x2 - x1) * (int) dy;
-                }
-            }
-        }
-
         // Kontrola pro vertikální úsečku
         if (x1 == x2) {
             for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                if (panel.inWindow(x1, y)) {
+                if (raster.inRange(x1, y)) {
                     drawThickPoint(x1, y, thickness); // Vykreslení tlustého bodu pro vertikální úsečku
                 }
             }
@@ -107,8 +82,8 @@ public class ThicknessLineRasterizer extends LineRasterizer {
                 if (Math.sqrt(dx * dx + dy * dy) <= halfThickness) { // Kruhový tvar
                     int drawX = x + dx;
                     int drawY = y + dy;
-                    if (panel.inWindow(drawX, drawY)) {
-                        raster.setRGB(drawX, drawY, color);
+                    if (raster.inRange(drawX, drawY)) {
+                        raster.setPixel(drawX, drawY, color);
                     }
                 }
             }
@@ -123,8 +98,8 @@ public class ThicknessLineRasterizer extends LineRasterizer {
                 if (Math.sqrt(dx * dx + dy * dy) <= radius) { // Kruhový tvar
                     int drawX = x + dx;
                     int drawY = y + dy;
-                    if (panel.inWindow(drawX, drawY)) {
-                        raster.setRGB(drawX, drawY, color);
+                    if (raster.inRange(drawX, drawY)) {
+                        raster.setPixel(drawX, drawY, color);
                     }
                 }
             }
