@@ -24,14 +24,12 @@ public class ThicknessLineRasterizer extends LineRasterizer {
         // Kontrola pro vertikální úsečku
         if (x1 == x2) {
             for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                if (raster.inRange(x1, y)) {
-                    drawThickPoint(x1, y, thickness); // Vykreslení tlustého bodu pro vertikální úsečku
-                }
+                    drawThickPoint(x1, y, thickness);
             }
-            // Vykreslení zaobleného konce na vertikální úsečce
+
             drawEndCap(x1, y1);
             drawEndCap(x2, y2);
-            return; // Ukončíme funkci, protože jsme už vykreslili úsečku
+            return;
         }
 
         // Výpočet směrnice k
@@ -50,9 +48,10 @@ public class ThicknessLineRasterizer extends LineRasterizer {
             }
             for (int x = x1; x <= x2; x++) {
                 float y = k * x + q;
-                drawThickPoint(x, Math.round(y), thickness); // Tloušťka je konstantní
+                drawThickPoint(x, Math.round(y), thickness);
             }
         }
+
         // Řídící osa je y
         else {
             if (y1 > y2) {
@@ -65,11 +64,10 @@ public class ThicknessLineRasterizer extends LineRasterizer {
             }
             for (int y = y1; y <= y2; y++) {
                 float x = (y - q) / k;
-                drawThickPoint(Math.round(x), y, thickness); // Tloušťka je konstantní
+                drawThickPoint(Math.round(x), y, thickness);
             }
         }
 
-        // Vykreslení zaoblených konců
         drawEndCap(x1, y1);
         drawEndCap(x2, y2);
     }
@@ -82,9 +80,7 @@ public class ThicknessLineRasterizer extends LineRasterizer {
                 if (Math.sqrt(dx * dx + dy * dy) <= halfThickness) { // Kruhový tvar
                     int drawX = x + dx;
                     int drawY = y + dy;
-                    if (raster.inRange(drawX, drawY)) {
                         raster.setPixel(drawX, drawY, color);
-                    }
                 }
             }
         }
@@ -98,9 +94,7 @@ public class ThicknessLineRasterizer extends LineRasterizer {
                 if (Math.sqrt(dx * dx + dy * dy) <= radius) { // Kruhový tvar
                     int drawX = x + dx;
                     int drawY = y + dy;
-                    if (raster.inRange(drawX, drawY)) {
                         raster.setPixel(drawX, drawY, color);
-                    }
                 }
             }
         }

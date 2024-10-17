@@ -30,10 +30,5 @@ public class Panel extends JPanel {
     public Raster getRaster() {
         return raster;
     }
-
-    public boolean inRange(int x, int y) {
-        return raster.inRange(x, y);
-    }
-
 }
 

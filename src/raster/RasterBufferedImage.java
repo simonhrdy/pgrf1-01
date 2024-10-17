@@ -1,5 +1,6 @@
 package raster;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -13,7 +14,9 @@ public class RasterBufferedImage implements Raster {
 
     @Override
     public void setPixel(int x, int y, int value) {
-        image.setRGB(x, y, value);
+        if(this.inRange(x,y)){
+            image.setRGB(x, y, value);
+        }
     }
 
     @Override

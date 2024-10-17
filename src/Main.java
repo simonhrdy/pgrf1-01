@@ -11,7 +11,6 @@ public class Main {
         Window window = new Window(800, 600);
         new Controller2D(window.getPanel());
 
-
         window.getPanel().setFocusable(true);
         window.getPanel().requestFocusInWindow();
     }

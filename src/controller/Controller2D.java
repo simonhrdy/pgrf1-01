@@ -23,6 +23,7 @@ public class Controller2D {
     private Point endPoint;
     private boolean isShift = false;
     private boolean isPolygon = false;
+    private boolean isEditMode = false;
     private Polygon polygon;
 
     public Controller2D(Panel panel) {
@@ -42,13 +43,33 @@ public class Controller2D {
         panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                startPoint = new Point(e.getX(), e.getY());
-                if (!panel.inRange(startPoint.getX(), startPoint.getY())) {
-                    return;
-                }
-                if(isPolygon){
-                    polygon.addPoint(startPoint);
-                    polygonRasterizer.rasterize(polygon);
+                if(e.getButton() == MouseEvent.BUTTON1){
+                    startPoint = new Point(e.getX(), e.getY());
+                    if(isEditMode){
+                        showDialog("Edit mod, pust E pro přidávání nových bodu");
+                    }
+                    if(isPolygon && !isEditMode){
+                        polygon.addPoint(startPoint);
+                        panel.clear();
+                        polygonRasterizer.rasterize(polygon);
+                    }
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
+                    if(isEditMode){
+                        startPoint = new Point(e.getX(), e.getY());
+                        Point closestPoint = polygon.getClosestPoint(startPoint);
+
+                        if(closestPoint != null){
+                            closestPoint.setX(startPoint.getX());
+                            closestPoint.setY(startPoint.getY());
+                        }
+                        System.out.println(closestPoint);
+
+                        panel.repaint();
+                        //return;
+                        panel.clear();
+                        polygonRasterizer.rasterize(polygon);
+                    }
+
                 }
                 panel.repaint();
             }
@@ -59,12 +80,13 @@ public class Controller2D {
             @Override
             public void mouseDragged(MouseEvent e) {
                 endPoint = new Point(e.getX(), e.getY());
-                if (!panel.inRange(endPoint.getX(), endPoint.getY())) {
-                    return;
+                if(e.getButton() != MouseEvent.BUTTON3){
+                    panel.clear();
                 }
-                panel.clear();
-                if(isPolygon){
+
+                if(isPolygon && !isEditMode){
                     polygonRasterizer.setLineRasterizer(new FilledLineRasterizer(panel.getRaster()));
+
                     if (polygon.getSize() <= 2) {
                         polygon.addPoint(endPoint);
                     } else {
@@ -73,7 +95,7 @@ public class Controller2D {
                     }
                     polygonRasterizer.rasterize(polygon);
 
-                } else {
+                } else if (!isPolygon) {
                     if (isShift) {
                         float dy = Math.abs(endPoint.getY() - startPoint.getY());
                         float dx = Math.abs(endPoint.getX() - startPoint.getX());
@@ -93,7 +115,7 @@ public class Controller2D {
                     Line line = new Line(startPoint.getX(), startPoint.getY(), endPoint.getX(), endPoint.getY());
                     lineRasterizer.drawLine(line);
                 }
-                    panel.repaint();
+                   panel.repaint();
             }
         });
 
@@ -118,10 +140,17 @@ public class Controller2D {
                                 showDialog("Grid byl vymazán");
                                 break;
                             case KeyEvent.VK_P:
-                                clear();
+                                if(polygon.getSize() < 1){
+                                    clear();
+                                }
                                 showDialog("Režim: polygon");
                                 isPolygon = true;
                                 polygonRasterizer = new PolygonRasterizer(lineRasterizer);
+                                break;
+                            case KeyEvent.VK_E:
+                                if(isPolygon){
+                                    isEditMode = true;
+                                }
                                 break;
                             case KeyEvent.VK_SHIFT:
                                 isShift = true;
@@ -133,6 +162,8 @@ public class Controller2D {
                     public void keyReleased(KeyEvent e) {
                         if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
                             isShift = false;
+                        } else if (e.getKeyCode() == KeyEvent.VK_E){
+                            isEditMode = false;
                         }
                     }
                 }
@@ -143,6 +174,9 @@ public class Controller2D {
         panel.clear();
         panel.repaint();
         isPolygon = false;
+        isEditMode = false;
+        startPoint = null;
+        endPoint = null;
         polygon.clearList();
     }
 

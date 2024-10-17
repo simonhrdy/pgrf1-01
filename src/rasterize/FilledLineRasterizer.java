@@ -37,18 +37,14 @@ public class FilledLineRasterizer extends LineRasterizer {
         // Vertikální úsečka
         if (x1 == x2) {
             for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
-                if (raster.inRange(x1, y)) {
                     raster.setPixel(x1, y, color);
-                }
             }
         }
         // Pokud směrnice (k) je v intervalu [-1, 1], úsečka není strmá a řídící osa je x
         else if (Math.abs(k) <= 1) {
             for (int x = x1; x <= x2; x++) {
                 float y = k * x + q;
-                if (raster.inRange(x, Math.round(y))) {
-                    raster.setPixel(x, Math.round(y), color);
-                }
+                raster.setPixel(x, Math.round(y), color);
             }
         }
         // Pokud je směrnice k větší než 1 nebo menší než -1, je úsečka strmá, řídící osa bude y
@@ -64,9 +60,7 @@ public class FilledLineRasterizer extends LineRasterizer {
 
             for (int y = y1; y <= y2; y++) {
                 float x = (y - q) / k;
-                if (raster.inRange(Math.round(x), y)) {
                     raster.setPixel(Math.round(x), y, color);
-                }
             }
         }
     }
